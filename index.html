@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Logika Pemrograman Dasar (10 Soal)</title>
+    <style>
+        /* CSS untuk Tampilan Kuis */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .quiz-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+        .question-box {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #e9ecef;
+        }
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .options label:hover {
+            background-color: #cfe2ff;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .navigation-buttons button {
+            flex-grow: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 48%; /* Mengatur lebar tombol */
+        }
+        #prev-button {
+            background-color: #ffc107; /* Kuning untuk Kembali */
+            color: #333;
+        }
+        #prev-button:hover {
+            background-color: #e0a800;
+        }
+        #next-button {
+            background-color: #28a745; /* Hijau untuk Selanjutnya */
+            color: white;
+        }
+        #next-button:hover {
+            background-color: #218838;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            color: #f4f4f9;
+        }
+        .result-box {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            background-color: #f0f8ff;
+        }
+        .result-box h2 {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Kuis Logika Pemrograman Dasar (10 Soal) 🧠</h1>
+    
+    <div id="quiz-area">
+        <div id="question-number"></div>
+        <div class="question-box" id="question-text"></div>
+        <form id="options-form" class="options"></form>
+        
+        <div class="navigation-buttons">
+            <button id="prev-button" onclick="prevQuestion()" disabled>Kembali</button>
+            <button id="next-button" onclick="nextQuestion()">Selanjutnya</button>
+        </div>
+    </div>
+
+    <div id="result-area" class="result-box" style="display: none;">
+        </div>
+</div>
+
+<script>
+    // Data Kuis (10 Soal)
+    const questions = [
+        {
+            question: "Urutan langkah-langkah yang logis dan sistematis untuk menyelesaikan suatu masalah disebut sebagai:",
+            options: ["Sintaks", "Program", "Algoritma", "Variabel"],
+            answer: "Algoritma"
+        },
+        {
+            question: "Dalam struktur dasar algoritma, sebuah langkah dikerjakan setelah langkah sebelumnya selesai. Struktur ini dikenal sebagai:",
+            options: ["Perulangan (Looping)", "Sekuensial (Urutan)", "Kondisional (Percabangan)", "Modular"],
+            answer: "Sekuensial (Urutan)"
+        },
+        {
+            question: "Tipe data yang digunakan untuk menyimpan nilai kebenaran, yaitu hanya bisa bernilai 'True' atau 'False' adalah:",
+            options: ["Integer", "String", "Float", "Boolean"],
+            answer: "Boolean"
+        },
+        {
+            question: "Dalam sebuah *flowchart* (diagram alir), simbol berbentuk persegi panjang ($\\,\\square$) digunakan untuk merepresentasikan:",
+            options: ["Keputusan (Decision)", "Awal atau Akhir (Start/End)", "Input atau Output Data (I/O)", "Proses atau Komputasi"],
+            answer: "Proses atau Komputasi"
+        },
+        {
+            question: "Jika variabel `nilai` berisi 80 pada pseudocode Percabangan JIKA-MAKA-SELAIN ITU, maka nilai akhir `KETERANGAN` adalah:",
+            options: ["TIDAK LULUS", "75", "LULUS", "Tidak ada hasil, karena terjadi error"],
+            answer: "\"LULUS\""
+        },
+        {
+            question: "Elemen pemrograman yang berfungsi sebagai tempat penyimpanan data yang nilainya dapat berubah selama program dieksekusi disebut:",
+            options: ["Prosedur", "Konstanta", "Variabel", "Ekspresi"],
+            answer: "Variabel"
+        },
+        {
+            question: "Jika `A` bernilai `True` dan `B` bernilai `False`, manakah hasil operasi logika berikut yang menghasilkan nilai `False`?",
+            options: ["A OR B", "NOT A", "NOT B", "A AND B"],
+            answer: "NOT A"
+        },
+        {
+            question: "Struktur kontrol yang memungkinkan program menjalankan satu blok kode dari dua atau lebih blok kode berdasarkan evaluasi suatu kondisi adalah:",
+            options: ["Perulangan (Looping)", "Percabangan (Conditional/Selection)", "Subrutin", "Array"],
+            answer: "Percabangan (Conditional/Selection)"
+        },
+        {
+            question: "Struktur perulangan (looping) jenis `DO-WHILE` akan menguji kondisi di akhir blok kode. Implikasinya adalah:",
+            options: ["Blok kode akan selalu dieksekusi minimal satu kali, terlepas dari kondisi.", "Blok kode hanya dieksekusi jika kondisi `True` sebelum loop dimulai.", "Hanya digunakan untuk iterasi yang diketahui.", "Perulangan akan berhenti segera setelah kondisi diuji."],
+            answer: "Blok kode akan selalu dieksekusi minimal satu kali, terlepas dari kondisi."
+        },
+        {
+            question: "Berapakah hasil akhir dari ekspresi aritmatika berikut: $5 + 2 \\times 3 - 8 / 4$?",
+            options: ["9", "21", "7", "11"],
+            answer: "9"
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    // Array untuk menyimpan jawaban pengguna, diinisialisasi dengan null untuk setiap soal
+    const userAnswers = new Array(questions.length).fill(null); 
+
+    const quizArea = document.getElementById('quiz-area');
+    const resultArea = document.getElementById('result-area');
+    const questionNumberEl = document.getElementById('question-number');
+    const questionTextEl = document.getElementById('question-text');
+    const optionsFormEl = document.getElementById('options-form');
+    const nextButtonEl = document.getElementById('next-button');
+    const prevButtonEl = document.getElementById('prev-button');
+
+    // Fungsi untuk memuat soal saat ini
+    function loadQuestion() {
+        if (currentQuestionIndex < 0) {
+            currentQuestionIndex = 0; // Pastikan tidak di bawah 0
+        }
+
+        if (currentQuestionIndex < questions.length) {
+            const currentQ = questions[currentQuestionIndex];
+            
+            questionNumberEl.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
+            questionTextEl.innerHTML = currentQ.question;
+            optionsFormEl.innerHTML = ''; // Kosongkan opsi sebelumnya
+            
+            // Atur teks tombol Selanjutnya dan aktifkan/nonaktifkan tombol navigasi
+            nextButtonEl.textContent = currentQuestionIndex === questions.length - 1 ? 'Lihat Hasil' : 'Selanjutnya';
+            prevButtonEl.disabled = currentQuestionIndex === 0;
+
+            // Nonaktifkan tombol selanjutnya jika belum ada jawaban (kecuali di soal terakhir)
+            // Tombol akan diaktifkan melalui event listener di bawah
+            nextButtonEl.disabled = userAnswers[currentQuestionIndex] === null && currentQuestionIndex < questions.length;
+            
+            currentQ.options.forEach((option) => {
+                const label = document.createElement('label');
+                const radioInput = document.createElement('input');
+                radioInput.type = 'radio';
+                radioInput.name = 'answer';
+                radioInput.value = option;
+                
+                // Cek apakah jawaban sudah pernah disimpan, lalu tandai radio button
+                if (userAnswers[currentQuestionIndex] === option) {
+                    radioInput.checked = true;
+                }
+
+                label.appendChild(radioInput);
+                label.innerHTML += ` ${option}`;
+                optionsFormEl.appendChild(label);
+
+                // Tambahkan event listener untuk menyimpan jawaban dan mengaktifkan tombol
+                radioInput.addEventListener('change', (e) => {
+                    // Simpan jawaban segera setelah dipilih
+                    userAnswers[currentQuestionIndex] = e.target.value;
+                    nextButtonEl.disabled = false;
+                });
+            });
+            
+            // Jika sudah ada jawaban tersimpan, tombol selanjutnya tetap aktif
+            if (userAnswers[currentQuestionIndex] !== null) {
+                nextButtonEl.disabled = false;
+            }
+
+        } else {
+            showResult(); // Tampilkan hasil jika index melewati batas
+        }
+    }
+
+    // Fungsi untuk memproses jawaban dan pindah ke soal berikutnya
+    function nextQuestion() {
+        const selectedOption = optionsFormEl.querySelector('input[name="answer"]:checked');
+        
+        // Simpan jawaban saat ini sebelum pindah, jika belum tersimpan via 'change' event
+        if (selectedOption) {
+            userAnswers[currentQuestionIndex] = selectedOption.value;
+        }
+
+        // Jika ini adalah soal terakhir, langsung tampilkan hasil
+        if (currentQuestionIndex === questions.length - 1) {
+            showResult();
+        } else if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+    }
+
+    // Fungsi untuk kembali ke soal sebelumnya
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+        }
+    }
+
+    // Fungsi untuk menampilkan hasil akhir
+    function showResult() {
+        quizArea.style.display = 'none';
+        resultArea.style.display = 'block';
+
+        let score = 0;
+        // Hitung skor dari array jawaban yang tersimpan
+        questions.forEach((q, index) => {
+            if (userAnswers[index] === q.answer) {
+                score++;
+            }
+        });
+        
+        const totalQuestions = questions.length;
+        const percentage = (score / totalQuestions) * 100;
+        let evaluation = "";
+
+        if (percentage >= 90) {
+            evaluation = "Sempurna! Anda adalah Master Logika Pemrograman. 🎉";
+        } else if (percentage >= 70) {
+            evaluation = "Luar Biasa! Pemahaman Logika Anda Sangat Baik. 👍";
+        } else if (percentage >= 50) {
+            evaluation = "Cukup Baik! Perlu sedikit pemantapan pada konsep tertentu. 📚";
+        } else {
+            evaluation = "Terus Semangat Belajar! Fokuskan pada dasar-dasar Algoritma dan Logika. 💪";
+        }
+
+        resultArea.innerHTML = `
+            <h2>Hasil Kuis Anda</h2>
+            <p>Anda berhasil menjawab **${score}** dari **${totalQuestions}** soal.</p>
+            <p>Skor Anda: **${percentage.toFixed(0)}%**</p>
+            <p>**${evaluation}**</p>
+            <button onclick="location.reload()">Ulangi Kuis</button>
+        `;
+    }
+
+    // Inisialisasi Kuis
+    document.addEventListener('DOMContentLoaded', loadQuestion);
+
+</script>
+</body>
+</html>
